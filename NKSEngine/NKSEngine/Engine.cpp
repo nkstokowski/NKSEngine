@@ -66,6 +66,8 @@ bool Engine::start()
 	glUniform3f(8, lightloc.x, lightloc.y, lightloc.z);
 	glUniform4f(6, matData.x, matData.y, matData.z, matData.w);
 
+	loadTexture();
+
 	return true;
 }
 
@@ -77,7 +79,7 @@ void Engine::stop()
 
 bool Engine::bufferModels()
 {
-	myModel.buffer("models/sphere.obj");
+	myModel.buffer("models/teapot.obj");
 	return true;
 }
 
@@ -115,6 +117,12 @@ bool Engine::shouldClose()
 	}
 
 	return false;
+}
+
+bool Engine::loadTexture()
+{
+	FreeImage_GetFileType();
+	FIBITMAP* image = FreeImage_Load();
 }
 
 Engine::Engine()

@@ -31,6 +31,7 @@ public:
 	static void update();
 	static void render();
 	static bool shouldClose();
+	static bool loadTexture();
 	Engine();
 	virtual ~Engine();
 };
