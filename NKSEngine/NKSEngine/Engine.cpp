@@ -1,13 +1,12 @@
 #include <stdlib.h>
 #include "Engine.h"
-#include "Timer.h"
 #include "GLDebug.h"
 
-//Timer Engine::timer;
+Timer Engine::myTimer;
 GLFWwindow* Engine::GLFWwindowPtr;
 Shader Engine::myShader;
 Camera Engine::myCamera;
-Model Engine::myModel;
+//Skybox* Engine::mySkybox;
 
 bool Engine::start()
 {
@@ -46,6 +45,21 @@ bool Engine::start()
 	myCamera.start();
 	myCamera.upload();
 
+	vector<const GLchar*> faces;
+	faces.push_back("textures/hw_morning/morning_rt.tga");
+	faces.push_back("textures/hw_morning/morning_lf.tga");
+	faces.push_back("textures/hw_morning/morning_up.tga");
+	faces.push_back("textures/hw_morning/morning_dn.tga");
+	faces.push_back("textures/hw_morning/morning_bk.tga");
+	faces.push_back("textures/hw_morning/morning_ft.tga");
+	//Model* skyboxMod = new Model("models/box.obj");
+	//Cubemap* skyboxTex = new Cubemap();
+	//mySkybox->setModel(skyboxMod);
+	//mySkybox->setTexture(skyboxTex);
+	//skyboxMod->buffer();
+	//skyboxTex->load(faces);
+
+
 	glfwSetInputMode(GLFWwindowPtr, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
@@ -56,17 +70,16 @@ bool Engine::start()
 
 	// Uploading materials
 	glm::vec4 matData;
-	matData.x = 0.1f;
-	matData.y = 1.0f;
-	matData.z = 0.0f;
+	matData.x = 0.6f;
+	matData.y = 0.6f;
+	matData.z = 0.6f;
 	matData.w = 16.0f;
 
-	glm::vec3 lightloc = glm::vec3(1.0f, 10.0f, 0.0f);
+	glm::vec3 lightloc = { 0, 5, 1 };
 
 	glUniform3f(8, lightloc.x, lightloc.y, lightloc.z);
 	glUniform4f(6, matData.x, matData.y, matData.z, matData.w);
-
-	loadTexture();
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	return true;
 }
@@ -79,17 +92,13 @@ void Engine::stop()
 
 bool Engine::bufferModels()
 {
-	myModel.buffer("models/teapot.obj");
 	return true;
 }
 
 void Engine::update()
 {
-
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	myModel.render();
-
+	//glClear(GL_COLOR_BUFFER_BIT);
+	
 	myCamera.update();
 
 	float timeval = (float)glfwGetTime();
@@ -99,7 +108,7 @@ void Engine::update()
 
 	glfwSwapBuffers(GLFWwindowPtr);
 	glfwPollEvents();
-
+	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void Engine::render() {
@@ -119,11 +128,7 @@ bool Engine::shouldClose()
 	return false;
 }
 
-bool Engine::loadTexture()
-{
-	FreeImage_GetFileType();
-	FIBITMAP* image = FreeImage_Load();
-}
+
 
 Engine::Engine()
 {

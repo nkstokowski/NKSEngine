@@ -13,13 +13,14 @@ Timer::Timer()
 	fps = 0;
 }
 
-void Timer::update()
+float Timer::update()
 {
 	prev = cur;
 	cur = clock();
 	dt = (cur - prev) / (float)CLOCKS_PER_SEC;
 	t += dt;
 	fps = 1 / dt;
+	return dt;
 }
 
 

@@ -14,8 +14,8 @@ class Shader
 {
 public:
 	GLuint program, vprogram, fprogram;
-	string filenamev = "shaders/V4/vShader.glsl";
-	string filenamef = "shaders/V4/fShader.glsl";
+	string filenamev = "shaders/V6/vShader.glsl";
+	string filenamef = "shaders/V6/fShader.glsl";
 	bool load();
 	bool compile(GLenum shaderType);
 	void use();

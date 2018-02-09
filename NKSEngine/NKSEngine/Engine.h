@@ -10,7 +10,8 @@
 #include "Timer.h"
 #include "Shader.h"
 #include "Camera.h"
-#include "Model.h"
+#include "Object.h"
+#include "Skybox.h"
 #include <ctime>
 
 using namespace std;
@@ -18,21 +19,19 @@ using namespace std;
 class Engine
 {
 private:
-	static GLFWwindow* GLFWwindowPtr;
 	static Shader myShader;
-	static Camera myCamera;
 	static float t0, t, dt, speed;
-	static Model myModel;
+	//static Skybox* mySkybox;
 public:
-	//static Timer timer;
+	static Camera myCamera;
+	static GLFWwindow* GLFWwindowPtr;
+	static Timer myTimer;
 	static bool start();
 	static void stop();
 	static bool bufferModels();
 	static void update();
 	static void render();
 	static bool shouldClose();
-	static bool loadTexture();
 	Engine();
 	virtual ~Engine();
 };
-

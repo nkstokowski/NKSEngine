@@ -8,15 +8,18 @@
 
 using namespace std;
 
-class Model
+class Model 
 {
 private:
 	GLuint vertArr;
 	unsigned int vertCount;
+	string objFile;
 public:
-	bool buffer(string objFile);
+	glm::vec3 maxXYZ;
+	bool buffer();
 	bool render();
-	Model();
+	bool unload();
+	Model(string filenm);
 	virtual ~Model();
 };
 

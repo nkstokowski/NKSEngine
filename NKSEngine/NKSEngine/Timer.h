@@ -6,13 +6,13 @@ using namespace std;
 class Timer
 {
 private:
-	clock_t cur, prev;
 public:
+	clock_t cur, prev;
 	float t;
 	float dt;
 	float fps;
 	Timer();
-	void update();
+	float update();
 	virtual ~Timer();
 };
 

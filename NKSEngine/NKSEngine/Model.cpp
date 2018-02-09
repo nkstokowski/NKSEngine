@@ -6,7 +6,7 @@
 
 using namespace std;
 
-bool Model::buffer(string objFile)
+bool Model::buffer()
 {
 	vector<glm::vec3> locs;
 	vector<glm::vec2> uvs;
@@ -15,7 +15,7 @@ bool Model::buffer(string objFile)
 
 	ifstream strm(objFile, ios::binary);
 	if (!strm.is_open()) {
-		printf("Error opening file.\n");
+		printf("Model Error: Error opening file.\n");
 		return false;
 	}
 
@@ -73,17 +73,16 @@ bool Model::buffer(string objFile)
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	glBindVertexArray(0);
-
+	
 	GLintptr vertex_normal_offset = 5 * sizeof(float);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)vertex_normal_offset);
-	glBindVertexArray(1);
-
+	
 	GLintptr vertex_uv_offset = 3 * sizeof(float);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)vertex_uv_offset);
-	glBindVertexArray(2);
+	
+	glBindVertexArray(0);
 
 	return true;
 }
@@ -96,13 +95,21 @@ bool Model::render()
 	return true;
 }
 
-Model::Model()
+bool Model::unload()
 {
+	return false;
+}
+
+Model::Model(string filenm)
+{
+	objFile = filenm;
 	vertArr = 0;
 	vertCount = 0;
+	maxXYZ = { 1, 1, 1 };
 }
 
 
 Model::~Model()
 {
+
 }

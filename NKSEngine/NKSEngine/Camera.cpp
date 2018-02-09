@@ -9,21 +9,30 @@ void Camera::uploadLocation(int index)
 void Camera::move()
 {
 	glm::vec3 direction;
+	bool pressed = false;
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT) || glfwGetKey(window, GLFW_KEY_A)) {
-		direction.x -= 1;
+	if (glfwGetKey(window, GLFW_KEY_LEFT)) {
+		//direction.x -= 1;
+		transform.force += glm::vec3(-1, 0, 0);
+		pressed = true;
 	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) || glfwGetKey(window, GLFW_KEY_D)) {
-		direction.x += 1;
+	if (glfwGetKey(window, GLFW_KEY_RIGHT)) {
+		//direction.x += 1;
+		transform.force += glm::vec3(1, 0, 0);
+		pressed = true;
 	}
-	if (glfwGetKey(window, GLFW_KEY_UP) || glfwGetKey(window, GLFW_KEY_W)) {
-		direction.z -= 1;
+	if (glfwGetKey(window, GLFW_KEY_UP)) {
+		//direction.z -= 1;
+		transform.force += glm::vec3(0, 0, -1);
+		pressed = true;
 	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) || glfwGetKey(window, GLFW_KEY_S)) {
-		direction.z += 1;
+	if (glfwGetKey(window, GLFW_KEY_DOWN)) {
+		//direction.z += 1;
+		transform.force += glm::vec3(0, 0, 1);
+		pressed = true;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) {
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) && debugging) {
 		speed = 5.0f;
 	}
 	else {
@@ -32,10 +41,22 @@ void Camera::move()
 
 	if (direction != glm::vec3()) {
 		direction = glm::normalize(direction);
+		transform.force = glm::normalize(transform.force);
 	}
 
-	velocity = rotMat * direction * speed;
-	location += dt * velocity;
+	/*if (!pressed) {
+		transform.force = { 0, 0, 0 };
+	}*/
+
+	//velocity from force
+	transform.velocity = rotMat * (transform.force / transform.mass) * speed;
+	//location from velocity
+	transform.location += transform.velocity * dt;
+
+	transform.force = { 0, 0, 0 };
+
+	//velocity = rotMat * direction * speed;
+	//location += dt * velocity;
 
 }
 
@@ -43,12 +64,12 @@ void Camera::turn()
 {
 	double x, y;
 	float pi = 3.14159;
-	glfwGetWindowSize(window, &width, &height);
+	/*glfwGetWindowSize(window, &width, &height);
 	glfwGetCursorPos(window, &x, &y);
 
 	rotation.y += sensativity * (width * .5f - x);
 	rotation.x += sensativity * (height * .5f - y);
-	rotation.x = glm::clamp(rotation.x, -.5f * pi, .5f * pi);
+	rotation.x = glm::clamp(rotation.x, -.5f * pi, .5f * pi);*/
 
 	glfwSetCursorPos(window, width * .5f, height * .5f);
 	rotMat = glm::mat3(glm::yawPitchRoll(rotation.y, rotation.x, rotation.z));
@@ -69,7 +90,8 @@ void Camera::start()
 
 	rotMat = (glm::mat3)glm::yawPitchRoll(rotation.y, rotation.x, rotation.z);
 
-	eye = location;
+	//eye = location;
+	eye = transform.location;
 	center = eye + rotMat * glm::vec3(0, 0, -1);
 	up = rotMat * glm::vec3(0, 1, 0);
 
@@ -81,10 +103,16 @@ void Camera::update()
 	t = (float)glfwGetTime();
 	dt = t - t0;
 
-	move();
-	turn();
+	if (debugging) {
+		move();
+		turn();
+	}
+	else {
+		move();
+	}
 
-	eye = location;
+	//eye = location;
+	eye = transform.location;
 	center = eye + rotMat * glm::vec3(0, 0, -1);
 	up = rotMat * glm::vec3(0, 1, 0);
 
@@ -110,8 +138,10 @@ Camera::Camera()
 	zoom = 1.0f;
 	speed = 2.0f;
 	sensativity = 0.005;
-	location = { 0, 0, 2 };
+	//location = { 0, 0, 7 };
+	transform.location = { 0, 0, 7 };
 	rotation = { 0, 0, 0 };
+	debugging = false;
 }
 
 
